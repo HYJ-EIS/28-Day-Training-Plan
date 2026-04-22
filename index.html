@@ -1195,26 +1195,7 @@
       });
     }
 
-    function initManifest() {
-      if (document.querySelector('link[rel="manifest"]')) return;
-      const manifest = {
-        name: '28天体态矫正训练',
-        short_name: '体态训练',
-        start_url: './index.html',
-        display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#ff7aa2',
-        description: '28天体态矫正、Barre塑形、每日打卡与训练提醒',
-        icons: []
-      };
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-      const manifestUrl = URL.createObjectURL(manifestBlob);
-      const link = document.createElement('link');
-      link.rel = 'manifest';
-      link.href = manifestUrl;
-      document.head.appendChild(link);
-    }
-
+    
     function runTests() {
       console.assert(basePlan.length === 28, '基础计划长度必须是28天');
       console.assert(getRenderedPlan().length === 28, '渲染后计划长度必须是28天');
@@ -1244,7 +1225,7 @@
       console.assert(els.topbarCollapsible.classList.contains('compact'), '设置收起失败');
     }
 
-    initManifest();
+    
     restoreSettings();
     attachEvents();
     render();
