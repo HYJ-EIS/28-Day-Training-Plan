@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#ff7aa2" />
@@ -1189,7 +1190,7 @@
     function registerServiceWorker() {
       if (!("serviceWorker" in navigator)) return;
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js').catch(function(error) {
+        navigator.serviceWorker.register('/sw.js').catch(function(error) {
           console.error('Service Worker 注册失败:', error);
         });
       });
