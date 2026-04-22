@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ff7aa2" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="体态训练" />
+  <title>28天体态矫正打卡</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --brand: #ff7aa2;
+      --brand-dark: #ff5d8f;
+      --line: #ece7ef;
+      --shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
+      --ok-bg: #f2fbf4;
+      --ok-line: #cfead6;
+      --period-bg: #fff7fb;
+      --period-line: #ffd9e8;
+      --nav-bg: rgba(255,255,255,.96);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      background: linear-gradient(180deg, #fcfbfd 0%, #f3eef6 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: calc(92px + env(safe-area-inset-bottom));
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    h1 {
+      margin: 8px 0 12px;
+      text-align: center;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      background: rgba(255,255,255,.90);
+      backdrop-filter: blur(10px);
+      padding: 10px 12px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 14px rgba(31,41,55,.06);
+      border: 1px solid var(--line);
+    }
+
+    .topbar label {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .topbar input[type="time"],
+    .topbar input[type="number"] {
+      margin-top: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: #fff;
+      width: 100%;
+      max-width: 150px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-top: 6px;
+      white-space: normal;
+    }
+
+    .topbar-summary {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+
+    .topbar-collapsible {
+      display:grid;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .topbar-collapsible.compact {
+      display:none;
+    }
+
+    .toolbar-actions,
+    .video-actions,
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .toolbar-actions { margin-top: 10px; }
+    .footer-actions { margin-top: 12px; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 0 0 14px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      min-height: 84px;
+    }
+
+    .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; line-height: 1.35; }
+    .stat-value { font-size: 22px; font-weight: 800; line-height: 1.1; }
+    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .progress {
+      background: #ebe7ef;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 2px;
+      height: 10px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: linear-gradient(90deg, var(--brand) 0%, #ff9cbc 100%);
+      width: 0%;
+      transition: width .2s ease;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .today-hero {
+      background: linear-gradient(135deg, #fff1f5 0%, #ffffff 100%);
+      border: 1px solid #ffd6e3;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .today-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .today-title { font-size: 18px; font-weight: 800; }
+    .today-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    .day {
+      background: var(--card);
+      padding: 14px;
+      margin-bottom: 14px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .day.done {
+      background: linear-gradient(180deg, #ffffff 0%, var(--ok-bg) 100%);
+      border-color: var(--ok-line);
+    }
+
+    .day.period {
+      background: linear-gradient(180deg, #ffffff 0%, var(--period-bg) 100%);
+      border-color: var(--period-line);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .day-title { font-size: 18px; font-weight: 800; }
+    .day-sub { font-size: 13px; color: var(--muted); }
+    .section-title { font-size: 13px; color: var(--muted); margin: 10px 0 8px; }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .video-card {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      align-items: flex-start;
+    }
+
+    .video-card.done-video {
+      border-color: #cfead6;
+      background: linear-gradient(180deg, #ffffff 0%, #f2fbf4 100%);
+    }
+
+    .thumb-img {
+      width: 132px;
+      min-width: 132px;
+      height: 82px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: #f1e7d9;
+      display: block;
+      border: 1px solid rgba(0,0,0,.04);
+    }
+
+    .video-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .video-title {
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .video-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #fff1f5;
+      color: #c2416c;
+      border: 1px solid #ffd1df;
+    }
+
+    .video-check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .video-check-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brand);
+    }
+
+    .timer {
+      font-weight: 700;
+      margin-top: 8px;
+      color: #374151;
+      min-height: 20px;
+    }
+
+    button {
+      padding: 9px 12px;
+      border: none;
+      border-radius: 12px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.secondary { background: #eef0f5; color: #344054; }
+    button.ghost { background: transparent; color: var(--brand-dark); border: 1px solid #ffd1df; }
+
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .legend .badge { background: #fff; }
+
+    .stats-panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .stats-list { display: grid; gap: 10px; }
+
+    .stats-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .stats-item-label { font-size: 14px; color: var(--muted); }
+    .stats-item-value { font-size: 18px; font-weight: 800; }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(10px + env(safe-area-inset-bottom));
+      width: min(560px, calc(100% - 20px));
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 8px;
+      z-index: 30;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      border-radius: 14px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .nav-btn.active {
+      background: #fff1f5;
+      color: var(--brand-dark);
+      border: 1px solid #ffd1df;
+    }
+
+    .nav-icon { font-size: 18px; line-height: 1; }
+
+    @media (max-width: 420px) {
+      .grid-2, .stats-grid { grid-template-columns: 1fr; }
+      .thumb-img { width: 118px; min-width: 118px; height: 76px; }
+      button { padding: 8px 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>28天体态矫正 + 跟练打卡</h1>
+
+    <section class="topbar" aria-label="训练设置">
+      <div class="topbar-summary">
+        <div>进度：<span id="progressText">0/28（0%）</span></div>
+        <button id="toggleSettingsBtn" type="button" class="ghost">展开设置</button>
+      </div>
+      <div class="progress" aria-hidden="true"><div class="progress-bar" id="bar"></div></div>
+
+      <div id="topbarCollapsible" class="topbar-collapsible compact">
+        <div class="grid-2">
+          <label>
+            每日提醒时间
+            <input type="time" id="notifyTime" />
+          </label>
+          <label>
+            生理期从第几天开始
+            <input type="number" id="periodStart" min="1" max="28" value="1" />
+          </label>
+        </div>
+
+        <label>
+          开启生理期周计划（仅连续7天替换）
+          <input type="checkbox" id="periodMode" />
+        </label>
+
+        <div class="toolbar-actions">
+          <button id="reminderBtn" type="button">设置提醒</button>
+          <button id="installBtn" type="button" class="secondary" hidden>安装到主屏幕</button>
+        </div>
+
+        <div class="legend">
+          <span class="badge">标准日：体态修正主线</span>
+          <span class="badge">强化日：加Barre塑形</span>
+          <span class="badge">生理期周：仅替换7天</span>
+        </div>
+
+        <div class="hint">生理期模式现在只会替换从“开始日”起连续7天的计划，不会压缩整个28天。小米手机要想让提醒更稳定，需要允许浏览器通知并关闭省电限制。</div>
+      </div>
+    </section>
+
+    <section id="view-today" class="view active" aria-label="今日页">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">本周训练总时长</div>
+          <div class="stat-value" id="weeklyMinutes">0</div>
+          <div class="stat-sub">分钟</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已完成视频数</div>
+          <div class="stat-value" id="completedVideos">0</div>
+          <div class="stat-sub">个</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">连续打卡天数</div>
+          <div class="stat-value" id="streakDays">0</div>
+          <div class="stat-sub">天</div>
+        </div>
+      </div>
+      <div id="todayHero"></div>
+      <div id="todayPlan"></div>
+    </section>
+
+    <section id="view-all" class="view" aria-label="全部日程页">
+      <div id="plan"></div>
+    </section>
+
+    <section id="view-stats" class="view" aria-label="统计页">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">本周训练总时长</div>
+          <div class="stat-value" id="weeklyMinutesStats">0</div>
+          <div class="stat-sub">分钟</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已完成视频数</div>
+          <div class="stat-value" id="completedVideosStats">0</div>
+          <div class="stat-sub">个</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">连续打卡天数</div>
+          <div class="stat-value" id="streakDaysStats">0</div>
+          <div class="stat-sub">天</div>
+        </div>
+      </div>
+
+      <div class="stats-panel">
+        <div class="section-title">训练统计</div>
+        <div class="stats-list">
+          <div class="stats-item">
+            <div><div class="stats-item-label">28天已完成天数</div></div>
+            <div class="stats-item-value" id="doneDaysStat">0</div>
+          </div>
+          <div class="stats-item">
+            <div><div class="stats-item-label">28天完成率</div></div>
+            <div class="stats-item-value" id="completionRateStat">0%</div>
+          </div>
+          <div class="stats-item">
+            <div><div class="stats-item-label">本周已完成天数</div></div>
+            <div class="stats-item-value" id="weeklyDaysStat">0</div>
+          </div>
+          <div class="stats-item">
+            <div><div class="stats-item-label">当前今日训练类型</div></div>
+            <div class="stats-item-value" id="todayTypeStat">-</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="底部导航">
+    <button class="nav-btn active" type="button" data-nav="today">
+      <span class="nav-icon">🏠</span>
+      <span>今日页</span>
+    </button>
+    <button class="nav-btn" type="button" data-nav="all">
+      <span class="nav-icon">🗓️</span>
+      <span>全部日程</span>
+    </button>
+    <button class="nav-btn" type="button" data-nav="stats">
+      <span class="nav-icon">📊</span>
+      <span>统计页</span>
+    </button>
+  </nav>
+
+  <script>
+    const APP_EPOCH_KEY = "appEpochDate";
+    const CURRENT_DAY_KEY = "currentDayIndex";
+    const ACTIVE_VIEW_KEY = "activeView";
+    const NOTIFY_TIME_KEY = "notifyTime";
+    const PERIOD_MODE_KEY = "periodMode";
+    const PERIOD_START_KEY = "periodStart";
+
+    const videos = {
+      foot: {
+        url: "https://www.bilibili.com/video/BV1ofKEzjEUd",
+        title: "足弓重建4.0",
+        desc: "足弓激活、足底控制、改善外侧承重",
+        duration: 20,
+        coverText: ["20MIN", "足弓重建4.0", "足弓综合训练"],
+        colors: ["#f1e7d9", "#e8d3b7", "#d6b48b"]
+      },
+      breath9090: {
+        url: "https://www.bilibili.com/video/BV1MurfB2E4Q?t=292.4",
+        title: "9090呼吸法",
+        desc: "建立腹压，改善骨盆前倾、肋骨外翻与核心控制",
+        duration: 10,
+        coverText: ["9090", "呼吸法", "核心与骨盆"],
+        colors: ["#dff1ff", "#a9d8ff", "#74b8ff"]
+      },
+      hipMobility: {
+        url: "https://www.bilibili.com/video/BV1frcAevEp9",
+        title: "髋关节灵活度训练 10分钟完整版",
+        desc: "打开髋关节活动度，改善下肢代偿与骨盆位置",
+        duration: 10,
+        coverText: ["10MIN", "髋关节", "灵活度训练"],
+        colors: ["#e8f7ef", "#a7e1bf", "#5bc28c"]
+      },
+      thoracic: {
+        url: "https://www.bilibili.com/video/BV1qQULYPENn",
+        title: "提升胸椎灵活度",
+        desc: "改善胸椎僵硬、斜方肌代偿、肩内扣、翼状肩胛等上半身体态问题",
+        duration: 10,
+        coverText: ["胸椎", "灵活度提升", "恢复胸廓弹性"],
+        colors: ["#fff0df", "#ffc98a", "#ff9f58"]
+      },
+      sleepStretch: {
+        url: "https://www.bilibili.com/video/BV1UovWBNENi",
+        title: "睡前10min胸椎x髋部筋膜拉伸",
+        desc: "低强度放松胸椎与髋部，适合恢复日或睡前收尾",
+        duration: 10,
+        coverText: ["睡前10MIN", "胸椎×髋部", "筋膜拉伸"],
+        colors: ["#efe9ff", "#c7b5ff", "#8d6bff"]
+      },
+      sitPosture: {
+        url: "https://www.bilibili.com/video/BV1uCoRYHE1v",
+        title: "坐姿10MIN圆肩驼背头前伸矫正",
+        desc: "低门槛上肢体态修正，适合日常重复练",
+        duration: 10,
+        coverText: ["坐姿10MIN", "圆肩驼背", "头前伸矫正"],
+        colors: ["#ffe9ef", "#ffb0c7", "#ff7aa2"]
+      },
+      smoothBack: {
+        url: "https://www.bilibili.com/video/BV1Gz421C7G1",
+        title: "每天15分钟 get一眼万年的丝滑美背",
+        desc: "纠正圆肩驼背头前伸，改善肩背线条",
+        duration: 15,
+        coverText: ["15MIN", "丝滑美背", "纠正圆肩驼背"],
+        colors: ["#edf7ff", "#b2ddff", "#6eb7ff"]
+      },
+      pelvisInnerThigh: {
+        url: "https://www.bilibili.com/video/BV1PhHrzfEqN",
+        title: "20分钟大腿内侧x盆底肌x骨盆稳定",
+        desc: "稳定骨盆，补足内收链与盆底控制，适合骨盆前倾和下肢不稳",
+        duration: 20,
+        coverText: ["20MIN", "大腿内侧×盆底肌", "骨盆稳定"],
+        colors: ["#fff1f4", "#ffc7d4", "#ff8da9"]
+      },
+      barreLower: {
+        url: "https://www.bilibili.com/video/BV1hTWBzvEXn",
+        title: "30分钟Barre芭杆臀腿紧致x腰腹核心",
+        desc: "站立Barre，下肢塑形 + 腰腹核心整合",
+        duration: 30,
+        coverText: ["30MIN Barre", "臀腿紧致提升", "腰腹核心"],
+        colors: ["#efe6db", "#d8c1a8", "#b58d5d"]
+      },
+      barreUpper: {
+        url: "https://www.bilibili.com/video/BV1qQc4zxEsi",
+        title: "30分钟Barre芭杆上肢雕刻 体态薄背",
+        desc: "上肢塑形、薄背、改善肩带线条",
+        duration: 30,
+        coverText: ["30MIN Barre", "上肢雕刻", "体态薄背"],
+        colors: ["#eaf3ff", "#bfd8ff", "#83b2ff"]
+      },
+      barreArms: {
+        url: "https://www.bilibili.com/video/BV11Autz4EoV",
+        title: "20分钟Barre芭杆练手臂x薄背",
+        desc: "手臂线条与上背塑形，适合补充训练",
+        duration: 20,
+        coverText: ["20MIN Barre", "练手臂", "薄背"],
+        colors: ["#f1efff", "#d0c7ff", "#9e87ff"]
+      },
+      barreGlutes: {
+        url: "https://www.bilibili.com/video/BV1FczFBcEBQ",
+        title: "30分钟Barre站立芭杆臀腿雕刻",
+        desc: "站立臀腿雕刻，偏塑形与耐力",
+        duration: 30,
+        coverText: ["30MIN Barre", "站立芭杆", "臀腿雕刻"],
+        colors: ["#fff0e8", "#ffc5a8", "#ff9664"]
+      }
+    };
+
+    const templates = {
+      standard: ["foot", "breath9090", "hipMobility", "thoracic", "sitPosture", "sleepStretch"],
+      upper_focus: ["breath9090", "thoracic", "smoothBack", "sitPosture", "barreUpper", "barreArms"],
+      lower_focus: ["foot", "breath9090", "hipMobility", "pelvisInnerThigh", "barreLower"],
+      sculpt: ["foot", "breath9090", "pelvisInnerThigh", "barreGlutes", "smoothBack"],
+      mobility: ["breath9090", "hipMobility", "thoracic", "sleepStretch", "sitPosture"],
+      light_recovery: ["breath9090", "sleepStretch", "sitPosture"],
+      period_day_1_2: ["breath9090", "sleepStretch", "sitPosture"],
+      period_day_3_4: ["breath9090", "hipMobility", "sleepStretch", "sitPosture"],
+      period_day_5_7: ["breath9090", "hipMobility", "pelvisInnerThigh", "smoothBack"]
+    };
+
+    const typeLabels = {
+      standard: "标准矫正日",
+      upper_focus: "上肢薄背日",
+      lower_focus: "下肢核心日",
+      sculpt: "塑形强化日",
+      mobility: "灵活恢复日",
+      light_recovery: "轻恢复日",
+      period_day_1_2: "生理期第1-2天",
+      period_day_3_4: "生理期第3-4天",
+      period_day_5_7: "生理期第5-7天"
+    };
+
+    const basePlan = [
+      "standard", "lower_focus", "mobility", "upper_focus", "sculpt", "light_recovery", "mobility",
+      "standard", "lower_focus", "upper_focus", "sculpt", "mobility", "light_recovery", "sculpt",
+      "standard", "lower_focus", "upper_focus", "sculpt", "mobility", "light_recovery", "upper_focus",
+      "standard", "lower_focus", "sculpt", "upper_focus", "mobility", "light_recovery", "sculpt"
+    ];
+
+    const els = {
+      plan: document.getElementById("plan"),
+      todayPlan: document.getElementById("todayPlan"),
+      todayHero: document.getElementById("todayHero"),
+      progressText: document.getElementById("progressText"),
+      bar: document.getElementById("bar"),
+      notifyTime: document.getElementById("notifyTime"),
+      periodMode: document.getElementById("periodMode"),
+      periodStart: document.getElementById("periodStart"),
+      reminderBtn: document.getElementById("reminderBtn"),
+      installBtn: document.getElementById("installBtn"),
+      toggleSettingsBtn: document.getElementById("toggleSettingsBtn"),
+      topbarCollapsible: document.getElementById("topbarCollapsible"),
+      weeklyMinutes: document.getElementById("weeklyMinutes"),
+      completedVideos: document.getElementById("completedVideos"),
+      streakDays: document.getElementById("streakDays"),
+      weeklyMinutesStats: document.getElementById("weeklyMinutesStats"),
+      completedVideosStats: document.getElementById("completedVideosStats"),
+      streakDaysStats: document.getElementById("streakDaysStats"),
+      doneDaysStat: document.getElementById("doneDaysStat"),
+      completionRateStat: document.getElementById("completionRateStat"),
+      weeklyDaysStat: document.getElementById("weeklyDaysStat"),
+      todayTypeStat: document.getElementById("todayTypeStat"),
+      views: {
+        today: document.getElementById("view-today"),
+        all: document.getElementById("view-all"),
+        stats: document.getElementById("view-stats")
+      },
+      navButtons: Array.from(document.querySelectorAll(".nav-btn"))
+    };
+
+    const activeIntervals = Object.create(null);
+    let deferredPrompt = null;
+    let lastNotifyKey = "";
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function svgCover(titleLines, colors) {
+      const c1 = colors[0];
+      const c2 = colors[1];
+      const c3 = colors[2];
+      const l1 = titleLines[0] || "";
+      const l2 = titleLines[1] || "";
+      const l3 = titleLines[2] || "";
+      const svg = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="396" height="246" viewBox="0 0 396 246">',
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">',
+        '<stop offset="0%" stop-color="' + c1 + '"/>',
+        '<stop offset="55%" stop-color="' + c2 + '"/>',
+        '<stop offset="100%" stop-color="' + c3 + '"/>',
+        '</linearGradient></defs>',
+        '<rect width="396" height="246" rx="24" fill="url(#g)"/>',
+        '<circle cx="308" cy="72" r="50" fill="rgba(255,255,255,.24)"/>',
+        '<circle cx="338" cy="42" r="22" fill="rgba(255,255,255,.18)"/>',
+        '<rect x="18" y="18" width="360" height="210" rx="20" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.22)"/>',
+        '<text x="24" y="54" font-size="26" font-family="Arial, PingFang SC, Microsoft YaHei" fill="#ffffff" font-weight="700">' + escapeHtml(l1) + '</text>',
+        '<text x="24" y="92" font-size="22" font-family="Arial, PingFang SC, Microsoft YaHei" fill="#ffffff" font-weight="700">' + escapeHtml(l2) + '</text>',
+        '<text x="24" y="126" font-size="20" font-family="Arial, PingFang SC, Microsoft YaHei" fill="#fffafc" font-weight="600">' + escapeHtml(l3) + '</text>',
+        '<rect x="24" y="182" width="74" height="28" rx="14" fill="rgba(0,0,0,.42)"/>',
+        '<polygon points="42,189 42,203 54,196" fill="#fff"/>',
+        '<text x="62" y="201" font-size="13" font-family="Arial" fill="#fff">B站</text>',
+        '</svg>'
+      ].join('');
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    function estimateTime(keys) {
+      return keys.reduce(function(sum, key) {
+        return sum + videos[key].duration;
+      }, 0);
+    }
+
+    function normalizeDate(date) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    function dateDiffInDays(a, b) {
+      return Math.floor((normalizeDate(a).getTime() - normalizeDate(b).getTime()) / 86400000);
+    }
+
+    function getOrCreateEpochDate() {
+      const saved = localStorage.getItem(APP_EPOCH_KEY);
+      if (saved) return saved;
+      const today = new Date();
+      const iso = normalizeDate(today).toISOString().slice(0, 10);
+      localStorage.setItem(APP_EPOCH_KEY, iso);
+      return iso;
+    }
+
+    function getVideoDoneKey(dayIndex, key) {
+      return 'video_' + dayIndex + '_' + key;
+    }
+
+    function isVideoDone(dayIndex, key) {
+      return localStorage.getItem(getVideoDoneKey(dayIndex, key)) === '1';
+    }
+
+    function getRenderedPlan() {
+      const rendered = basePlan.slice();
+      const enabled = els.periodMode.checked;
+      const start = Math.max(1, Math.min(28, Number(els.periodStart.value || 1)));
+      if (!enabled) return rendered;
+      const periodTypes = [
+        'period_day_1_2', 'period_day_1_2',
+        'period_day_3_4', 'period_day_3_4',
+        'period_day_5_7', 'period_day_5_7', 'period_day_5_7'
+      ];
+      for (let offset = 0; offset < 7; offset += 1) {
+        const idx = start - 1 + offset;
+        if (idx >= 0 && idx < rendered.length) rendered[idx] = periodTypes[offset];
+      }
+      return rendered;
+    }
+
+    function getTodayIndex() {
+      const epochIso = getOrCreateEpochDate();
+      const diff = dateDiffInDays(new Date(), new Date(epochIso));
+      const autoIndex = Math.min(27, Math.max(0, diff));
+      const manual = Number(localStorage.getItem(CURRENT_DAY_KEY));
+      if (manual >= 0 && manual < 28 && manual !== autoIndex) return manual;
+      localStorage.setItem(CURRENT_DAY_KEY, String(autoIndex));
+      return autoIndex;
+    }
+
+    function countCompletedVideosForDays(renderedPlan, dayIndexes) {
+      return dayIndexes.reduce(function(sum, dayIndex) {
+        const keys = templates[renderedPlan[dayIndex]];
+        return sum + keys.reduce(function(inner, key) {
+          return inner + (isVideoDone(dayIndex, key) ? 1 : 0);
+        }, 0);
+      }, 0);
+    }
+
+    function syncDayDoneFromVideos(dayIndex) {
+      const renderedPlan = getRenderedPlan();
+      const keys = templates[renderedPlan[dayIndex]];
+      const allDone = keys.length > 0 && keys.every(function(key) { return isVideoDone(dayIndex, key); });
+      const storageKey = 'day' + dayIndex;
+      if (allDone) localStorage.setItem(storageKey, '1');
+      else localStorage.removeItem(storageKey);
+    }
+
+    function setAllVideosForDay(dayIndex, done) {
+      const renderedPlan = getRenderedPlan();
+      const keys = templates[renderedPlan[dayIndex]];
+      keys.forEach(function(key) {
+        const k = getVideoDoneKey(dayIndex, key);
+        if (done) localStorage.setItem(k, '1');
+        else localStorage.removeItem(k);
+      });
+      const storageKey = 'day' + dayIndex;
+      if (done) localStorage.setItem(storageKey, '1');
+      else localStorage.removeItem(storageKey);
+    }
+
+    function toggleVideoDone(dayIndex, key) {
+      const storageKey = getVideoDoneKey(dayIndex, key);
+      if (isVideoDone(dayIndex, key)) localStorage.removeItem(storageKey);
+      else localStorage.setItem(storageKey, '1');
+      syncDayDoneFromVideos(dayIndex);
+      render();
+    }
+
+    function toggleDone(dayIndex) {
+      const storageKey = 'day' + dayIndex;
+      const nextDone = !localStorage.getItem(storageKey);
+      setAllVideosForDay(dayIndex, nextDone);
+      render();
+    }
+
+    function openVideo(url) {
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function startTimer(dayIndex, key) {
+      const id = String(dayIndex) + '_' + String(key);
+      if (activeIntervals[id]) return;
+      let sec = videos[key].duration * 60;
+      const timerEl = document.getElementById('timer-' + id);
+      const tick = function() {
+        const minutes = String(Math.floor(sec / 60)).padStart(2, '0');
+        const seconds = String(sec % 60).padStart(2, '0');
+        if (timerEl) timerEl.textContent = sec > 0 ? ('计时中 ' + minutes + ':' + seconds) : '已完成';
+        if (sec <= 0) {
+          clearInterval(activeIntervals[id]);
+          delete activeIntervals[id];
+          localStorage.setItem(getVideoDoneKey(dayIndex, key), '1');
+          syncDayDoneFromVideos(dayIndex);
+          render();
+          try { alert('已完成：' + videos[key].title); } catch (error) {}
+          return;
+        }
+        sec -= 1;
+      };
+      tick();
+      activeIntervals[id] = window.setInterval(tick, 1000);
+    }
+
+    function stopTimer(dayIndex, key) {
+      const id = String(dayIndex) + '_' + String(key);
+      if (activeIntervals[id]) {
+        clearInterval(activeIntervals[id]);
+        delete activeIntervals[id];
+      }
+      const timerEl = document.getElementById('timer-' + id);
+      if (timerEl) timerEl.textContent = '';
+    }
+
+    function setReminder() {
+      const time = els.notifyTime.value;
+      if (!time) {
+        alert('请先选择提醒时间。');
+        return;
+      }
+      localStorage.setItem(NOTIFY_TIME_KEY, time);
+      if (!("Notification" in window)) {
+        alert('当前浏览器不支持网页通知。提醒时间已保存。\n在小米手机上建议用 Chrome 打开并添加到主屏幕。');
+        return;
+      }
+      Notification.requestPermission().then(function(permission) {
+        if (permission === 'granted') {
+          alert('提醒已设置。\n小米手机请允许浏览器通知，并关闭省电限制。\n网页通知不是系统级闹钟，浏览器被系统强杀后提醒可能失效。');
+        } else {
+          alert('你未授予通知权限。提醒时间已保存，但不会弹出系统通知。');
+        }
+      });
+    }
+
+    function buildVideoCard(dayIndex, key) {
+      const v = videos[key];
+      const timerId = 'timer-' + dayIndex + '_' + key;
+      const cover = svgCover(v.coverText, v.colors);
+      const done = isVideoDone(dayIndex, key);
+      return [
+        '<article class="video-card' + (done ? ' done-video' : '') + '">',
+        '<img class="thumb-img" src="' + cover + '" alt="' + escapeHtml(v.title) + ' 封面" />',
+        '<div class="video-info">',
+        '<div class="video-title">' + escapeHtml(v.title) + '</div>',
+        '<div class="video-desc">' + escapeHtml(v.desc) + '</div>',
+        '<div class="meta">',
+        '<span class="badge">约 ' + v.duration + ' 分钟</span>',
+        '<span class="badge">' + (done ? '已完成' : '未完成') + '</span>',
+        '</div>',
+        '<div class="video-actions">',
+        '<button type="button" data-action="open" data-url="' + escapeHtml(v.url) + '">打开视频</button>',
+        '<button type="button" class="secondary" data-action="start" data-day="' + dayIndex + '" data-key="' + key + '">开始计时</button>',
+        '<button type="button" class="ghost" data-action="stop" data-day="' + dayIndex + '" data-key="' + key + '">停止</button>',
+        '</div>',
+        '<label class="video-check-row">',
+        '<input type="checkbox" data-action="toggle-video-done" data-day="' + dayIndex + '" data-key="' + key + '" ' + (done ? 'checked' : '') + ' />',
+        '<span>本视频已完成</span>',
+        '</label>',
+        '<div class="timer" id="' + timerId + '"></div>',
+        '</div>',
+        '</article>'
+      ].join('');
+    }
+
+    function buildDaySection(dayIndex, type, done) {
+      const keys = templates[type];
+      const totalTime = estimateTime(keys);
+      const isPeriod = type.indexOf('period_') === 0;
+      const cards = keys.map(function(key) { return buildVideoCard(dayIndex, key); }).join('');
+      return [
+        '<section class="day' + (done ? ' done' : '') + (isPeriod ? ' period' : '') + '">',
+        '<div class="day-header">',
+        '<div>',
+        '<div class="day-title">Day ' + (dayIndex + 1) + '</div>',
+        '<div class="day-sub">' + typeLabels[type] + '</div>',
+        '</div>',
+        '<span class="badge">预计 ' + totalTime + ' 分钟</span>',
+        '</div>',
+        '<div class="section-title">今日训练卡片</div>',
+        '<div class="video-grid">' + cards + '</div>',
+        '<div class="footer-actions">',
+        '<button type="button" data-action="toggle-done" data-day="' + dayIndex + '">' + (done ? '取消打卡' : '完成打卡') + '</button>',
+        '<button type="button" class="secondary" data-action="set-current-day" data-day="' + dayIndex + '">设为今天</button>',
+        '</div>',
+        '</section>'
+      ].join('');
+    }
+
+    function getStats(renderedPlan) {
+      const doneDays = renderedPlan.reduce(function(sum, _, idx) {
+        return sum + (localStorage.getItem('day' + idx) ? 1 : 0);
+      }, 0);
+      const todayIndex = getTodayIndex();
+      const weekStart = Math.floor(todayIndex / 7) * 7;
+      const weekEnd = Math.min(weekStart + 7, renderedPlan.length);
+      const weekIndexes = Array.from({ length: weekEnd - weekStart }, function(_, i) { return weekStart + i; });
+      const weeklyMinutes = weekIndexes.reduce(function(sum, idx) {
+        return sum + estimateTime(templates[renderedPlan[idx]]);
+      }, 0);
+      const weeklyDoneDays = weekIndexes.reduce(function(sum, idx) {
+        return sum + (localStorage.getItem('day' + idx) ? 1 : 0);
+      }, 0);
+      const completedVideos = countCompletedVideosForDays(renderedPlan, weekIndexes);
+      const totalCompletedVideos = countCompletedVideosForDays(renderedPlan, Array.from({ length: renderedPlan.length }, function(_, i) { return i; }));
+      let streak = 0;
+      for (let i = 0; i < renderedPlan.length; i += 1) {
+        if (localStorage.getItem('day' + i)) streak += 1;
+        else streak = 0;
+      }
+      return {
+        doneDays: doneDays,
+        completionRate: Math.round(doneDays / 28 * 100),
+        weeklyMinutes: weeklyMinutes,
+        weeklyDoneDays: weeklyDoneDays,
+        completedVideos: completedVideos,
+        streak: streak,
+        todayIndex: todayIndex,
+        todayType: typeLabels[renderedPlan[todayIndex]],
+        totalCompletedVideos: totalCompletedVideos
+      };
+    }
+
+    function renderStats(stats) {
+      els.weeklyMinutes.textContent = String(stats.weeklyMinutes);
+      els.completedVideos.textContent = String(stats.completedVideos);
+      els.streakDays.textContent = String(stats.streak);
+      els.weeklyMinutesStats.textContent = String(stats.weeklyMinutes);
+      els.completedVideosStats.textContent = String(stats.completedVideos);
+      els.streakDaysStats.textContent = String(stats.streak);
+      els.doneDaysStat.textContent = String(stats.doneDays);
+      els.completionRateStat.textContent = String(stats.completionRate) + '%';
+      els.weeklyDaysStat.textContent = String(stats.weeklyDoneDays);
+      els.todayTypeStat.textContent = stats.todayType + ' · 累计视频 ' + stats.totalCompletedVideos;
+    }
+
+    function renderToday(renderedPlan, stats) {
+      const todayIndex = stats.todayIndex;
+      const done = Boolean(localStorage.getItem('day' + todayIndex));
+      const type = renderedPlan[todayIndex];
+      const totalTime = estimateTime(templates[type]);
+      const epochIso = getOrCreateEpochDate();
+      els.todayHero.innerHTML = [
+        '<section class="today-hero">',
+        '<div class="today-row">',
+        '<div>',
+        '<div class="today-title">今天练 Day ' + (todayIndex + 1) + '</div>',
+        '<div class="today-sub">' + typeLabels[type] + ' · 预计 ' + totalTime + ' 分钟</div>',
+        '<div class="today-sub">计划起始日：' + epochIso + '</div>',
+        '</div>',
+        '<span class="badge">' + (done ? '已打卡' : '未打卡') + '</span>',
+        '</div>',
+        '<div class="footer-actions" style="margin-top:12px;">',
+        '<button type="button" data-action="prev-day">前一天</button>',
+        '<button type="button" class="secondary" data-action="next-day">后一天</button>',
+        '<button type="button" class="ghost" data-action="toggle-done" data-day="' + todayIndex + '">' + (done ? '取消打卡' : '完成打卡') + '</button>',
+        '</div>',
+        '</section>'
+      ].join('');
+      els.todayPlan.innerHTML = buildDaySection(todayIndex, type, done);
+    }
+
+    function render() {
+      const renderedPlan = getRenderedPlan();
+      const stats = getStats(renderedPlan);
+      const html = [];
+      for (let i = 0; i < renderedPlan.length; i += 1) {
+        const type = renderedPlan[i];
+        const done = Boolean(localStorage.getItem('day' + i));
+        html.push(buildDaySection(i, type, done));
+      }
+      els.plan.innerHTML = html.join('');
+      els.progressText.textContent = String(stats.doneDays) + '/28（' + String(stats.completionRate) + '%）';
+      els.bar.style.width = String(stats.completionRate) + '%';
+      renderStats(stats);
+      renderToday(renderedPlan, stats);
+    }
+
+    function setActiveView(name) {
+      Object.entries(els.views).forEach(function(entry) {
+        const key = entry[0];
+        const node = entry[1];
+        node.classList.toggle('active', key === name);
+      });
+      els.navButtons.forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.nav === name);
+      });
+      localStorage.setItem(ACTIVE_VIEW_KEY, name);
+    }
+
+    function shiftCurrentDay(delta) {
+      let current = getTodayIndex() + delta;
+      if (current < 0) current = 0;
+      if (current > 27) current = 27;
+      localStorage.setItem(CURRENT_DAY_KEY, String(current));
+      render();
+    }
+
+    function setCurrentDay(dayIndex) {
+      localStorage.setItem(CURRENT_DAY_KEY, String(dayIndex));
+      setActiveView('today');
+      render();
+    }
+
+    function setSettingsExpanded(expanded) {
+      els.topbarCollapsible.classList.toggle('compact', !expanded);
+      els.toggleSettingsBtn.textContent = expanded ? '收起设置' : '展开设置';
+      localStorage.setItem('settingsExpanded', expanded ? '1' : '0');
+    }
+
+    function restoreSettings() {
+      const savedTime = localStorage.getItem(NOTIFY_TIME_KEY);
+      if (savedTime) els.notifyTime.value = savedTime;
+      const savedPeriodMode = localStorage.getItem(PERIOD_MODE_KEY);
+      if (savedPeriodMode === '1') els.periodMode.checked = true;
+      const savedPeriodStart = localStorage.getItem(PERIOD_START_KEY);
+      if (savedPeriodStart) els.periodStart.value = savedPeriodStart;
+      const savedView = localStorage.getItem(ACTIVE_VIEW_KEY) || 'today';
+      const currentDay = Number(localStorage.getItem(CURRENT_DAY_KEY));
+      if (!(currentDay >= 0 && currentDay < 28)) {
+        localStorage.setItem(CURRENT_DAY_KEY, String(getTodayIndex()));
+      }
+      setActiveView(savedView);
+      setSettingsExpanded(localStorage.getItem('settingsExpanded') === '1');
+    }
+
+    function attachEvents() {
+      els.periodMode.addEventListener('change', function() {
+        localStorage.setItem(PERIOD_MODE_KEY, els.periodMode.checked ? '1' : '0');
+        render();
+      });
+
+      els.periodStart.addEventListener('change', function() {
+        let value = Number(els.periodStart.value || 1);
+        if (value < 1) value = 1;
+        if (value > 28) value = 28;
+        els.periodStart.value = String(value);
+        localStorage.setItem(PERIOD_START_KEY, String(value));
+        render();
+      });
+
+      els.reminderBtn.addEventListener('click', setReminder);
+      els.toggleSettingsBtn.addEventListener('click', function() {
+        const expanded = els.topbarCollapsible.classList.contains('compact');
+        setSettingsExpanded(expanded);
+      });
+
+      els.installBtn.addEventListener('click', async function() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch (error) {}
+        deferredPrompt = null;
+        els.installBtn.hidden = true;
+      });
+
+      els.navButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          setActiveView(btn.dataset.nav);
+        });
+      });
+
+      document.body.addEventListener('click', function(event) {
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+        const action = button.dataset.action;
+        if (action === 'open') return openVideo(button.dataset.url);
+        if (action === 'start') return startTimer(Number(button.dataset.day), button.dataset.key);
+        if (action === 'stop') return stopTimer(Number(button.dataset.day), button.dataset.key);
+        if (action === 'toggle-done') return toggleDone(Number(button.dataset.day));
+        if (action === 'prev-day') return shiftCurrentDay(-1);
+        if (action === 'next-day') return shiftCurrentDay(1);
+        if (action === 'set-current-day') return setCurrentDay(Number(button.dataset.day));
+      });
+
+      document.body.addEventListener('change', function(event) {
+        const checkbox = event.target.closest('input[data-action="toggle-video-done"]');
+        if (!checkbox) return;
+        toggleVideoDone(Number(checkbox.dataset.day), checkbox.dataset.key);
+      });
+
+      window.addEventListener('beforeinstallprompt', function(event) {
+        event.preventDefault();
+        deferredPrompt = event;
+        els.installBtn.hidden = false;
+      });
+
+      window.addEventListener('appinstalled', function() {
+        deferredPrompt = null;
+        els.installBtn.hidden = true;
+      });
+    }
+
+    function startReminderLoop() {
+      window.setInterval(function() {
+        const time = localStorage.getItem(NOTIFY_TIME_KEY);
+        if (!time) return;
+        if (!("Notification" in window)) return;
+        if (Notification.permission !== 'granted') return;
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const key = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + hh + ':' + mm;
+        if ((hh + ':' + mm) === time && lastNotifyKey !== key) {
+          lastNotifyKey = key;
+          try {
+            new Notification('今日训练提醒', { body: '打开今天的训练卡片开始跟练（Day ' + (getTodayIndex() + 1) + '）' });
+          } catch (error) {}
+        }
+      }, 1000);
+    }
+
+    function registerServiceWorker() {
+      if (!("serviceWorker" in navigator)) return;
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js').catch(function(error) {
+          console.error('Service Worker 注册失败:', error);
+        });
+      });
+    }
+
+    function initManifest() {
+      if (document.querySelector('link[rel="manifest"]')) return;
+      const manifest = {
+        name: '28天体态矫正训练',
+        short_name: '体态训练',
+        start_url: './index.html',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#ff7aa2',
+        description: '28天体态矫正、Barre塑形、每日打卡与训练提醒',
+        icons: []
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      const link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = manifestUrl;
+      document.head.appendChild(link);
+    }
+
+    function runTests() {
+      console.assert(basePlan.length === 28, '基础计划长度必须是28天');
+      console.assert(getRenderedPlan().length === 28, '渲染后计划长度必须是28天');
+      console.assert(estimateTime(templates.light_recovery) === 30, '轻恢复日总时长应为30分钟');
+
+      els.periodMode.checked = true;
+      els.periodStart.value = '5';
+      const periodPlan = getRenderedPlan();
+      console.assert(periodPlan[4] === 'period_day_1_2', '生理期开始日替换错误');
+      console.assert(periodPlan[10] === basePlan[10], '生理期替换不应超过7天');
+      els.periodMode.checked = false;
+
+      localStorage.setItem(CURRENT_DAY_KEY, '3');
+      console.assert(getTodayIndex() >= 0, '今日索引恢复失败');
+
+      const firstVideoKey = templates[getRenderedPlan()[0]][0];
+      localStorage.setItem(getVideoDoneKey(0, firstVideoKey), '1');
+      const statsAfterVideo = getStats(getRenderedPlan());
+      console.assert(statsAfterVideo.totalCompletedVideos >= 1, '单视频完成统计失败');
+      localStorage.removeItem(getVideoDoneKey(0, firstVideoKey));
+
+      console.assert(typeof getOrCreateEpochDate() === 'string', '计划起始日初始化失败');
+      console.assert(svgCover(['A','B','C'], ['#111','#222','#333']).indexOf('data:image/svg+xml') === 0, '封面图生成失败');
+      setSettingsExpanded(true);
+      console.assert(!els.topbarCollapsible.classList.contains('compact'), '设置展开失败');
+      setSettingsExpanded(false);
+      console.assert(els.topbarCollapsible.classList.contains('compact'), '设置收起失败');
+    }
+
+    initManifest();
+    restoreSettings();
+    attachEvents();
+    render();
+    startReminderLoop();
+    registerServiceWorker();
+    runTests();
+  </script>
+</body>
+</html>
